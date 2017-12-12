@@ -13,19 +13,19 @@
 #include <stdio.h>
 #include <limits>
 using namespace std;
-int gatebuff(int iA);												//Logic gates-
-int gatenot(int iA);												//Explained at actual function
+int gatebuff(int iA);										//Logic gates-
+int gatenot(int iA);										//Explained at actual function
 int gateor(int iA, int iB);
 int gatenor(int iA, int iB);
 int gateand(int iA, int iB);
 int gatenand(int iA, int iB);
 int gatexor(int iA, int iB);
 int gatexnor(int iA, int iB);
-int codecheck(string lvlnum, int lvl);								//Checks if input is a level code, and if so, pushes to lvlcode()
-int lvlcode(int lvlcode, int lvl, string grocode);					//Prompt to see if user is sure about the level code they entered previously
-int codenoprompt(string lvlnum, int lvl);							//codecheck(), but it skips through lvlcode(), used for savedata
-int promptlvl(int status, string curcode, string nexcode, int lvl);	//NEEDS CLEANING- Prompt for checking the users status at the end of the level.
-int level1();														//Levels-
+int codecheck(string lvlnum);								//Checks if input is a level code, and if so, pushes to lvlcode()
+int lvlcode(int lvlcode, string grocode);					//Prompt to see if user is sure about the level code they entered previously
+int codenoprompt(string lvlnum);							//codecheck(), but it skips through lvlcode(), used for savedata
+int promptlvl(int status, string curcode, string nexcode);	//NEEDS CLEANING- Prompt for checking the users status at the end of the level.
+int level1();												//Levels-
 int level2();
 int level3();
 int level4();
@@ -36,32 +36,34 @@ int level8();
 int level9();
 int level10();
 int level11();
-int startgame(int lvl);												//Picks which level to run
-int menu(int lvl, int complete);									//Main menu prompt
-int gateinput(string inp);											//Takes input for logic gates from levels
-void savedelete();													//Deletes save file with prompt
+int startgame();											//Picks which level to run
+int menu();													//Main menu prompt
+int gateinput(string inp);									//Takes input for logic gates from levels
+void savedelete();											//Deletes save file with prompt
+
+int lvl;							// Global initialization of 'lvl' variable
 
 int main(int argc, char* argv[])	// argc = number of arguments sent to script, argv[] = all the arguments in the array
 {
-	int lvl = 1, complete = 0;		// Define these here to avoid messing things up if we define them in menu()
+	lvl = 1;						// Definition of global variable 'lvl'
 	string version = "0.6";			// Only here cause I got annoyed picking it out of the cout function below.
 	cout<<"Illogical "<<version<<"\nmade in C++, compiled in G++\n";// Basic startup info
 	if(argc>2){cout<<"---------------------------------------\n"	// If there are more than 2 arguments then the game lets you know and kindly quits
 		<<"Ran into an error: Too many arguments in command\n"
 		<<"---------------------------------------\n";
 		return 0;}
-	else if(argc==2){codecheck(argv[1],lvl); return 0;}				// If there are exactly 2, then we can assume the player entered the first argument as a level code and push it to codecheck()
+	else if(argc==2){codecheck(argv[1]); return 0;}				// If there are exactly 2, then we can assume the player entered the first argument as a level code and push it to codecheck()
 	ifstream my_file("lgcsav");										// Open a stream in the directory to "lgcsav" (the savedata file)
 	if (my_file.good())												// Check if it's good, then tell the script to put us at a certain level using codenoprompt() and the level code in the file
 	{ofstream savefile;				
 	string argg; getline(my_file, argg);		
-	codenoprompt( argg, lvl );}
+	codenoprompt(argg);}
 	else {ofstream savefile;										// If it doesn't exist, then create it and put the first level's level code inside the file.		
 	savefile.open ("lgcsav"); savefile<<"b8"; savefile.close();						
-	menu(lvl, complete);}											// Go to the menu.
+	menu();}														// Go to the menu.
 	return 0;
 }
-int menu(int lvl, int complete)
+int menu()
 {
 	cout<<"---------------------------------------\n";
 	int input;
@@ -85,10 +87,10 @@ int menu(int lvl, int complete)
 	switch (input)
 	{
 		case 0:cout<<"Illogical is a puzzle game based around logic gates and en\ntering positive or negative inputs to recieve certain outp\nuts required to complete the level\n";
-		menu(lvl, complete); break;
-		case 1: startgame(lvl); break;
+		menu(); break;
+		case 1: startgame(); break;
 		case 2: cout<<"> "; cin >> lvlnum;
-		codecheck(lvlnum, lvl);
+		codecheck(lvlnum);
 		break;
 		case 3:savedelete();
 		return 0;
@@ -96,7 +98,7 @@ int menu(int lvl, int complete)
 		case 4: return 0;
 		break;
 		default:cout<<"Please select from the menu\n";
-		menu(lvl, complete);
+		menu();
 		break;
 	}
 	return 0;
@@ -112,70 +114,71 @@ void savedelete()
 	else {cout<<"Ran into an error: 'prompt' changed after while loop\n"; return;}
 	return;
 }
-int codecheck(string lvlnum, int lvl)	
+int codecheck(string lvlnum)	
 {											
-		 if (lvlnum == "b8") {lvlcode( 1, lvl, lvlnum);}
-	else if (lvlnum == "mz") {lvlcode( 2, lvl, lvlnum);}
-	else if (lvlnum == "hx") {lvlcode( 3, lvl, lvlnum);}
-	else if (lvlnum == "aq") {lvlcode( 4, lvl, lvlnum);}
-	else if (lvlnum == "jl") {lvlcode( 5, lvl, lvlnum);}
-	else if (lvlnum == "hu") {lvlcode( 6, lvl, lvlnum);}
-	else if (lvlnum == "si") {lvlcode( 7, lvl, lvlnum);}
-	else if (lvlnum == "ok") {lvlcode( 8, lvl, lvlnum);}
-	else if (lvlnum == "wt") {lvlcode( 9, lvl, lvlnum);}
-	else if (lvlnum == "no") {lvlcode(10, lvl, lvlnum);}
-	else if (lvlnum == "9a") {lvlcode(11, lvl, lvlnum);}
-	else if (lvlnum == "jk") {lvlcode(12, lvl, lvlnum);}
-	else if (lvlnum == "pi") {lvlcode(13, lvl, lvlnum);}
-	else if (lvlnum == "re") {lvlcode(14, lvl, lvlnum);}
-	else if (lvlnum == "za") {lvlcode(15, lvl, lvlnum);}
-	else if (lvlnum == "qs") {lvlcode(16, lvl, lvlnum);}
-	else if (lvlnum == "or") {lvlcode(17, lvl, lvlnum);}
-	else if (lvlnum == "fg") {lvlcode(18, lvl, lvlnum);}
-	else if (lvlnum == "1z") {lvlcode(19, lvl, lvlnum);}
-	else if (lvlnum == "6q") {lvlcode(20, lvl, lvlnum);}
+		 if (lvlnum == "b8") {lvlcode( 1, lvlnum);}
+	else if (lvlnum == "mz") {lvlcode( 2, lvlnum);}
+	else if (lvlnum == "hx") {lvlcode( 3, lvlnum);}
+	else if (lvlnum == "aq") {lvlcode( 4, lvlnum);}
+	else if (lvlnum == "jl") {lvlcode( 5, lvlnum);}
+	else if (lvlnum == "hu") {lvlcode( 6, lvlnum);}
+	else if (lvlnum == "si") {lvlcode( 7, lvlnum);}
+	else if (lvlnum == "ok") {lvlcode( 8, lvlnum);}
+	else if (lvlnum == "wt") {lvlcode( 9, lvlnum);}
+	else if (lvlnum == "no") {lvlcode(10, lvlnum);}
+	else if (lvlnum == "9a") {lvlcode(11, lvlnum);}
+	else if (lvlnum == "jk") {lvlcode(12, lvlnum);}
+	else if (lvlnum == "pi") {lvlcode(13, lvlnum);}
+	else if (lvlnum == "re") {lvlcode(14, lvlnum);}
+	else if (lvlnum == "za") {lvlcode(15, lvlnum);}
+	else if (lvlnum == "qs") {lvlcode(16, lvlnum);}
+	else if (lvlnum == "or") {lvlcode(17, lvlnum);}
+	else if (lvlnum == "fg") {lvlcode(18, lvlnum);}
+	else if (lvlnum == "1z") {lvlcode(19, lvlnum);}
+	else if (lvlnum == "6q") {lvlcode(20, lvlnum);}
 	else {cout<<"Ran into an error: level code is invalid.\n";}
 	return 0;
 }
-int codenoprompt(string lvlnum, int lvl)
+int codenoprompt(string lvlnum)
 {
-		 if (lvlnum == "b8") {menu( 1, 0);}
-	else if (lvlnum == "mz") {menu( 2, 0);}
-	else if (lvlnum == "hx") {menu( 3, 0);}
-	else if (lvlnum == "aq") {menu( 4, 0);}
-	else if (lvlnum == "jl") {menu( 5, 0);}
-	else if (lvlnum == "hu") {menu( 6, 0);}
-	else if (lvlnum == "si") {menu( 7, 0);}
-	else if (lvlnum == "ok") {menu( 8, 0);}
-	else if (lvlnum == "wt") {menu( 9, 0);}
-	else if (lvlnum == "no") {menu(10, 0);}
-	else if (lvlnum == "9a") {menu(11, 0);}
-	else if (lvlnum == "jk") {menu(12, 0);}
-	else if (lvlnum == "pi") {menu(13, 0);}
-	else if (lvlnum == "re") {menu(14, 0);}
-	else if (lvlnum == "za") {menu(15, 0);}
-	else if (lvlnum == "qs") {menu(16, 0);}
-	else if (lvlnum == "or") {menu(17, 0);}
-	else if (lvlnum == "fg") {menu(18, 0);}
-	else if (lvlnum == "1z") {menu(19, 0);}
-	else if (lvlnum == "6q") {menu(20, 0);}
+		 if (lvlnum == "b8") {lvl=1;}
+	else if (lvlnum == "mz") {lvl=2;}
+	else if (lvlnum == "hx") {lvl=3;}
+	else if (lvlnum == "aq") {lvl=4;}
+	else if (lvlnum == "jl") {lvl=5;}
+	else if (lvlnum == "hu") {lvl=6;}
+	else if (lvlnum == "si") {lvl=7;}
+	else if (lvlnum == "ok") {lvl=8;}
+	else if (lvlnum == "wt") {lvl=9;}
+	else if (lvlnum == "no") {lvl=10;}
+	else if (lvlnum == "9a") {lvl=11;}
+	else if (lvlnum == "jk") {lvl=12;}
+	else if (lvlnum == "pi") {lvl=13;}
+	else if (lvlnum == "re") {lvl=14;}
+	else if (lvlnum == "za") {lvl=15;}
+	else if (lvlnum == "qs") {lvl=16;}
+	else if (lvlnum == "or") {lvl=17;}
+	else if (lvlnum == "fg") {lvl=18;}
+	else if (lvlnum == "1z") {lvl=19;}
+	else if (lvlnum == "6q") {lvl=20;}
 	else {cout<<"Your save file contains bad data.\n";
 		  savedelete();}
+	menu();
 	return 0;
 }
-int lvlcode(int lvlcode, int lvl, string grocode)
+int lvlcode(int lvlcode, string grocode)
 {
 	string prompt="";
 	cout<<"---------------------------------------\n"
 		<<"This will put you from level "<<lvl<<" to level "<<lvlcode<<".\n"
 		<<"Are you sure you want to do this? [y/n]\n> "; cin>>prompt;
 	while((prompt != "y") && (prompt != "n")){cout<<"Bad input.\n> ";cin>>prompt;}
-		 if(prompt=="y"){ofstream savefile; savefile.open("lgcsav"); savefile<<grocode; savefile.close(); cout<<"Done.\n"; menu(lvlcode, 0);}
-	else if(prompt == "n") {cout<<"Cancelled.\n"; menu(lvl, 0);}
+		 if(prompt=="y"){ofstream savefile; savefile.open("lgcsav"); savefile<<grocode; savefile.close(); cout<<"Done.\n"; lvl=lvlcode; menu();}
+	else if(prompt == "n") {cout<<"Cancelled.\n"; menu();}
 	else {cout<<"Ran into an error: 'prompt' changed after while loop";}
 	return 0;
 }
-int promptlvl(int status, string curcode, string nexcode, int lvl)
+int promptlvl(int status, string curcode, string nexcode)
 {
 	string prompt = "";				
 	if (status == 1) {						
@@ -193,20 +196,20 @@ int promptlvl(int status, string curcode, string nexcode, int lvl)
 			cin
 				>> prompt;					
 			if ( prompt == "y" ) {			
-				startgame(lvl);				
+				startgame();				
 			}
 			else if ( prompt == "n" ) {		
 				cout
 					<< "level code: "		
 					<< nexcode
 					<< endl;
-				menu(lvl, 1);			
+				menu();			
 			}
 			else {							
 				cout					
 					<< "Please enter 'y' or 'n'"
 					<< endl;			
-				promptlvl(status, curcode, nexcode, lvl);
+				promptlvl(status, curcode, nexcode);
 			}
 		}
 		else if (status == 0) {				
@@ -219,48 +222,48 @@ int promptlvl(int status, string curcode, string nexcode, int lvl)
 			cin
 				>> prompt;					
 			if ( prompt == "y" ) {			
-				startgame(lvl);				
+				startgame();				
 			}	
 			else if ( prompt == "n" ) {		
 				cout
 					<< "level code: "		
 					<< curcode
 					<< endl;			
-				menu(lvl, 1);			
+				menu();			
 			}
 			else {							
 				cout					
 					<< "Please enter 'y' or 'n'"
 					<< endl;			
-				promptlvl(status, curcode, nexcode, lvl);
+				promptlvl(status, curcode, nexcode);
 			}
 		}
 }
-int startgame(int lvl)						
+int startgame()						
 {
 	int complete;							
 	string prompt="";				
 	if(lvl==0){lvl = 1;}										
-		 if(lvl== 1){complete=level1(); 			promptlvl(complete, "b8", "mz", lvl);}
-	else if(lvl== 2){complete=gatenot(level2());	promptlvl(complete, "mz", "hx", lvl);}
-	else if(lvl== 3){complete=level3();				promptlvl(complete, "hx", "aq", lvl);}
-	else if(lvl== 4){complete=level4();				promptlvl(complete, "aq", "jl", lvl);}
-	else if(lvl== 5){complete=level5();				promptlvl(complete, "jl", "hu", lvl);}
-	else if(lvl== 6){complete=gatenot(level6());	promptlvl(complete, "hu", "si", lvl);}
-	else if(lvl== 7){complete=gatenot(level7());	promptlvl(complete, "si", "ok", lvl);}
-	else if(lvl== 8){complete=gatenot(level8());	promptlvl(complete, "ok", "wt", lvl);}
-	else if(lvl== 9){complete=level9();				promptlvl(complete, "wt", "no", lvl);}
-	else if(lvl==10){complete=gatenot(level10());	promptlvl(complete, "no", "9a", lvl);}
-	else if(lvl==11){complete=level11();			promptlvl(complete, "9a", "jk", lvl);}
-	else if(lvl==12){/*complete=level12();			promptlvl(complete, "jk", "pi", lvl);}*/}
-	else if(lvl==13){/*complete=level13();			promptlvl(complete, "pi", "re", lvl);}*/}
-	else if(lvl==14){/*complete=level14();			promptlvl(complete, "re", "za", lvl);}*/}
-	else if(lvl==15){/*complete=level15();			promptlvl(complete, "za", "qs", lvl);}*/}
-	else if(lvl==16){/*complete=level16();			promptlvl(complete, "qs", "or", lvl);}*/}
-	else if(lvl==17){/*complete=level17();			promptlvl(complete, "or", "fg", lvl);}*/}
-	else if(lvl==18){/*complete=level18();			promptlvl(complete, "fg", "1z", lvl);}*/}
-	else if(lvl==19){/*complete=level19();			promptlvl(complete, "1z", "6q", lvl);}*/}
-	else if(lvl==20){/*complete=level20();			promptlvl(complete, "6q", "??", lvl);}*/}
+		 if(lvl== 1){complete=level1(); 			promptlvl(complete, "b8", "mz");}
+	else if(lvl== 2){complete=gatenot(level2());	promptlvl(complete, "mz", "hx");}
+	else if(lvl== 3){complete=level3();				promptlvl(complete, "hx", "aq");}
+	else if(lvl== 4){complete=level4();				promptlvl(complete, "aq", "jl");}
+	else if(lvl== 5){complete=level5();				promptlvl(complete, "jl", "hu");}
+	else if(lvl== 6){complete=gatenot(level6());	promptlvl(complete, "hu", "si");}
+	else if(lvl== 7){complete=gatenot(level7());	promptlvl(complete, "si", "ok");}
+	else if(lvl== 8){complete=gatenot(level8());	promptlvl(complete, "ok", "wt");}
+	else if(lvl== 9){complete=level9();				promptlvl(complete, "wt", "no");}
+	else if(lvl==10){complete=gatenot(level10());	promptlvl(complete, "no", "9a");}
+	else if(lvl==11){complete=level11();			promptlvl(complete, "9a", "jk");}
+	else if(lvl==12){/*complete=level12();			promptlvl(complete, "jk", "pi");}*/}
+	else if(lvl==13){/*complete=level13();			promptlvl(complete, "pi", "re");}*/}
+	else if(lvl==14){/*complete=level14();			promptlvl(complete, "re", "za");}*/}
+	else if(lvl==15){/*complete=level15();			promptlvl(complete, "za", "qs");}*/}
+	else if(lvl==16){/*complete=level16();			promptlvl(complete, "qs", "or");}*/}
+	else if(lvl==17){/*complete=level17();			promptlvl(complete, "or", "fg");}*/}
+	else if(lvl==18){/*complete=level18();			promptlvl(complete, "fg", "1z");}*/}
+	else if(lvl==19){/*complete=level19();			promptlvl(complete, "1z", "6q");}*/}
+	else if(lvl==20){/*complete=level20();			promptlvl(complete, "6q", "??");}*/}
 	else if(lvl==21){/*youwin();*/}
 	else			{cout<<"Ran into an error: 'lvl' current status ("<<lvl<<") is not accounted for!\n";}
 	return 0;
