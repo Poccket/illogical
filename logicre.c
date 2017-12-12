@@ -13,19 +13,19 @@
 #include <stdio.h>
 #include <limits>
 using namespace std;
-int gatebuff(int iA);                 
-int gatenot(int iA);                  
+int gatebuff(int iA);												//Logic gates-
+int gatenot(int iA);												//Explained at actual function
 int gateor(int iA, int iB);
 int gatenor(int iA, int iB);
 int gateand(int iA, int iB);
 int gatenand(int iA, int iB);
 int gatexor(int iA, int iB);
 int gatexnor(int iA, int iB);
-int codecheck(string lvlnum, int lvl);
-int lvlcode(int lvlcode, int lvl, string grocode);
-int codenoprompt(string lvlnum, int lvl);
-int promptlvl(int status, string curcode, string nexcode, int lvl); 
-int level1();
+int codecheck(string lvlnum, int lvl);								//Checks if input is a level code, and if so, pushes to lvlcode()
+int lvlcode(int lvlcode, int lvl, string grocode);					//Prompt to see if user is sure about the level code they entered previously
+int codenoprompt(string lvlnum, int lvl);							//codecheck(), but it skips through lvlcode(), used for savedata
+int promptlvl(int status, string curcode, string nexcode, int lvl);	//NEEDS CLEANING- Prompt for checking the users status at the end of the level.
+int level1();														//Levels-
 int level2();
 int level3();
 int level4();
@@ -36,30 +36,30 @@ int level8();
 int level9();
 int level10();
 int level11();
-int startgame(int lvl);
-int menu(int lvl, int complete);
-int gateinput(string inp);
-void savedelete();
+int startgame(int lvl);												//Picks which level to run
+int menu(int lvl, int complete);									//Main menu prompt
+int gateinput(string inp);											//Takes input for logic gates from levels
+void savedelete();													//Deletes save file with prompt
 
-int main(int argc, char* argv[])			
+int main(int argc, char* argv[])	// argc = number of arguments sent to script, argv[] = all the arguments in the array
 {
-	int lvl = 1, complete = 0;
-	string version = "0.6";
-	cout<<"Illogical "<<version<<"\nmade in C++, compiled in G++\n";
-	if(argc>2){cout<<"---------------------------------------\n"
+	int lvl = 1, complete = 0;		// Define these here to avoid messing things up if we define them in menu()
+	string version = "0.6";			// Only here cause I got annoyed picking it out of the cout function below.
+	cout<<"Illogical "<<version<<"\nmade in C++, compiled in G++\n";// Basic startup info
+	if(argc>2){cout<<"---------------------------------------\n"	// If there are more than 2 arguments then the game lets you know and kindly quits
 		<<"Ran into an error: Too many arguments in command\n"
 		<<"---------------------------------------\n";
 		return 0;}
-	else if(argc==2){codecheck(argv[1],lvl); return 0;}
-	ifstream my_file("lgcsav");		
-	if (my_file.good())						
+	else if(argc==2){codecheck(argv[1],lvl); return 0;}				// If there are exactly 2, then we can assume the player entered the first argument as a level code and push it to codecheck()
+	ifstream my_file("lgcsav");										// Open a stream in the directory to "lgcsav" (the savedata file)
+	if (my_file.good())												// Check if it's good, then tell the script to put us at a certain level using codenoprompt() and the level code in the file
 	{ofstream savefile;				
 	string argg; getline(my_file, argg);		
 	codenoprompt( argg, lvl );}
-	else {ofstream savefile;				
+	else {ofstream savefile;										// If it doesn't exist, then create it and put the first level's level code inside the file.		
 	savefile.open ("lgcsav"); savefile<<"b8"; savefile.close();						
-	menu(lvl, complete);}
-	return 0;								
+	menu(lvl, complete);}											// Go to the menu.
+	return 0;
 }
 int menu(int lvl, int complete)
 {
@@ -109,7 +109,7 @@ void savedelete()
 	while((prompt != "y") && (prompt != "n")){cout<<"Bad input.\n> ";cin>>prompt;}
 		 if(prompt=="y"){remove("lgcsav"); return;}
 	else if(prompt=="n"){cout<<"Cancelled delete\n"; return;}
-	else {cout<<"Ran into an error: 'prompt' changed after while loop"; return;}
+	else {cout<<"Ran into an error: 'prompt' changed after while loop\n"; return;}
 	return;
 }
 int codecheck(string lvlnum, int lvl)	
@@ -134,7 +134,7 @@ int codecheck(string lvlnum, int lvl)
 	else if (lvlnum == "fg") {lvlcode(18, lvl, lvlnum);}
 	else if (lvlnum == "1z") {lvlcode(19, lvl, lvlnum);}
 	else if (lvlnum == "6q") {lvlcode(20, lvl, lvlnum);}
-	else {cout<<"Not a code, Sorry.\n";}
+	else {cout<<"Ran into an error: level code is invalid.\n";}
 	return 0;
 }
 int codenoprompt(string lvlnum, int lvl)
