@@ -24,7 +24,7 @@ int gatexnor(int iA, int iB);
 int codecheck(string lvlnum);								//Checks if input is a level code, and if so, pushes to lvlcode()
 int lvlcode(int lvlcode, string grocode);					//Prompt to see if user is sure about the level code they entered previously
 int codenoprompt(string lvlnum);							//codecheck(), but it skips through lvlcode(), used for savedata
-int promptlvl(int status, string curcode, string nexcode);	//NEEDS CLEANING- Prompt for checking the users status at the end of the level.
+void promptlvl(int status, string curcode, string nexcode);	//NEEDS CLEANING- Prompt for checking the users status at the end of the level.
 int level1();												//Levels-
 int level2();
 int level3();
@@ -170,69 +170,28 @@ int lvlcode(int lvlcode, string grocode)
 		<<"Are you sure you want to do this? [y/n]\n> "; cin>>prompt;
 	while((prompt != "y") && (prompt != "n")){cout<<"Bad input.\n> ";cin>>prompt;}
 		 if(prompt=="y"){ofstream savefile; savefile.open("lgcsav"); savefile<<grocode; savefile.close(); cout<<"Done.\n"; lvl=lvlcode; menu();}
-	else if(prompt == "n") {cout<<"Cancelled.\n"; menu();}
-	else {cout<<"Ran into an error: 'prompt' changed after while loop";}
+	else if(prompt=="n"){cout<<"Cancelled.\n"; menu();}
+	else {cout<<"Ran into an error: 'prompt' changed after while loop\n";}
 	return 0;
 }
-int promptlvl(int status, string curcode, string nexcode)
+void promptlvl(int status, string curcode, string nexcode)
 {
 	string prompt = "";				
 	if (status == 1) {						
-			ofstream savefile;			
-			savefile.open ("lgcsav");		
-			savefile << nexcode;				
-			savefile.close();					
+			ofstream savefile; savefile.open ("lgcsav"); savefile << nexcode; savefile.close();					
 			lvl++;							
-			cout
-				<< "Level complete."		
-				<< endl
-				<< "Next level? [y/n]"		
-				<< endl
-				<< "user: ";				
-			cin
-				>> prompt;					
-			if ( prompt == "y" ) {			
-				startgame();				
-			}
-			else if ( prompt == "n" ) {		
-				cout
-					<< "level code: "		
-					<< nexcode
-					<< endl;
-				menu();			
-			}
-			else {							
-				cout					
-					<< "Please enter 'y' or 'n'"
-					<< endl;			
-				promptlvl(status, curcode, nexcode);
-			}
+			cout<<"Level complete.\nNext level? [y/n]\nuser: "; cin>>prompt;
+			while((prompt != "y") && (prompt != "n")){cout<<"Bad input.\n> ";cin>>prompt;}					
+				 if(prompt=="y"){startgame();}
+			else if(prompt=="n"){cout<<"level code: "<<nexcode<<"\n"; menu();}
+			else {cout<<"Ran into an error: 'prompt' changed after while loop\n";}
 		}
 		else if (status == 0) {				
-			cout
-				<< "Level failed."			
-				<< endl
-				<< "Try again? [y/n]"		
-				<< endl
-				<< "user: ";				
-			cin
-				>> prompt;					
-			if ( prompt == "y" ) {			
-				startgame();				
-			}	
-			else if ( prompt == "n" ) {		
-				cout
-					<< "level code: "		
-					<< curcode
-					<< endl;			
-				menu();			
-			}
-			else {							
-				cout					
-					<< "Please enter 'y' or 'n'"
-					<< endl;			
-				promptlvl(status, curcode, nexcode);
-			}
+			cout<<"Level failed.\nTry again? [y/n]\nuser: "; cin>>prompt;
+			while((prompt != "y") && (prompt != "n")){cout<<"Bad input.\n> ";cin>>prompt;}
+				 if(prompt=="y"){startgame();}	
+			else if(prompt=="n"){cout<<"level code: "<<curcode<<"\n"; menu();}
+			else {cout<<"Ran into an error: 'prompt' changed after while loop\n";}
 		}
 }
 int startgame()						
@@ -268,20 +227,18 @@ int level1()
 {
 	int iA = 0, iB = 0, oA = 0;
 	cout
-		<< "Level 1"<< endl 
-		<< "Introduction to the basics of simple concepts."<< endl 
-		<< "+ Goal: Positive output."<< endl 
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl 
-		<< "- I: Input / O: Output"<< endl 
-		<< "- 1: Postive / 0: Negative"<< endl 
-		<< "[  I I  ]"<< endl 
-		<< "[  AND  ]"<< endl 
-		<< "[   O   ]"<< endl
-		<< endl
-		<< "There are two inputs (I) and one output (O)"<< endl
-		<< "You have to give the inputs (I) to get the required output (O) [+]"<< endl
-		<< "Try it out below."<< endl
-		<< endl;
+		<< "Level 1\n"
+		<< "Introduction to the basics of simple concepts.\n" 
+		<< "+ Goal: Positive output.\n" 
+		<< "- AND Gates: Give positive output with two positive inputs\n" 
+		<< "- I: Input / O: Output\n" 
+		<< "- 1: Postive / 0: Negative\n" 
+		<< "[  I I  ]\n" 
+		<< "[  AND  ]\n" 
+		<< "[   O   ]\n\n"
+		<< "There are two inputs (I) and one output (O)\n"
+		<< "You have to give the inputs (I) to get the required output (O) [+]\n"
+		<< "Try it out below.\n\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	oA = gateand(iA, iB);
@@ -296,24 +253,22 @@ int level2()
 	int iA = 0, iB = 0, oA = 0;
 	int iiA;
 	cout
-		<< "Level 2"<< endl 
-		<< "Do OR, do NOT."<< endl 
-		<< "+ Goal: Negative output."<< endl 
-		<< "- OR Gates: Gives positive output with any positive input"<< endl 
-		<< "- NOT Gates: Gives positive output with negative input, only accepts one input."<< endl 
-		<< "- I: Input / O: Output"<< endl 
-		<< "- 1: Postive / 0: Negative"<< endl 
-		<< "[  I I  ]"<< endl 
-		<< "[  OR   ]"<< endl 
-		<< "[  NOT  ]"<< endl 
-		<< "[   O   ]"<< endl
-		<< endl
-		<< "Different gates interact differently to inputs"<< endl
-		<< "For example, the OR gate takes in two inputs, and sends"<< endl
-		<< "a positive (1) output with any positive input,"<< endl
-		<< "while a NOT gate takes in a single input, and sends a"<< endl
-		<< "positive (1) output with a negative (0) input"<< endl
-		<< endl;
+		<< "Level 2\n" 
+		<< "Do OR, do NOT.\n" 
+		<< "+ Goal: Negative output.\n" 
+		<< "- OR Gates: Gives positive output with any positive input\n" 
+		<< "- NOT Gates: Gives positive output with negative input, only accepts one input.\n" 
+		<< "- I: Input / O: Output\n" 
+		<< "- 1: Postive / 0: Negative\n" 
+		<< "[  I I  ]\n" 
+		<< "[  OR   ]\n" 
+		<< "[  NOT  ]\n" 
+		<< "[   O   ]\n\n"
+		<< "Different gates interact differently to inputs\n"
+		<< "For example, the OR gate takes in two inputs, and sends\n"
+		<< "a positive (1) output with any positive input,\n"
+		<< "while a NOT gate takes in a single input, and sends a\n"
+		<< "positive (1) output with a negative (0) input\n\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gateor(iA, iB);
@@ -329,22 +284,19 @@ int level3()
 	int iA = 0, iB = 0, oA = 0;
 	int iiA, iiB;
 	cout
-		<< "Level 3"<< endl 
-		<< "Dynamic Duo"<< endl 
-		<< "+ Goal: Positive output."<< endl 
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl 
-		<< "- OR Gates: Gives positive output with any positive input"<< endl 
-		<< "[ I I   I I ]"<< endl 
-		<< "[ AND   OR  ]"<< endl 
-		<< "[    AND    ]"<< endl 
-		<< "[     O     ]"<< endl
-		<< endl
-		<< "When a gate gives an output, it either goes into the level output (O)"<< endl
-		<< "or it goes into the next gate on the layer below"<< endl
-		<< endl
-		<< "For example, the AND and OR gates will give two outputs, which will"<< endl
-		<< "put into the AND gate below them, and used at it's input."<< endl
-		<< endl;
+		<< "Level 3\n" 
+		<< "Dynamic Duo\n" 
+		<< "+ Goal: Positive output.\n" 
+		<< "- AND Gates: Give positive output with two positive inputs\n" 
+		<< "- OR Gates: Gives positive output with any positive input\n" 
+		<< "[ I I   I I ]\n" 
+		<< "[ AND   OR  ]\n" 
+		<< "[    AND    ]\n" 
+		<< "[     O     ]\n\n"
+		<< "When a gate gives an output, it either goes into the level output (O)\n"
+		<< "or it goes into the next gate on the layer below\n\n"
+		<< "For example, the AND and OR gates will give two outputs, which will\n"
+		<< "put into the AND gate below them, and used at it's input.\n\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gateand(iA, iB);
@@ -363,18 +315,17 @@ int level4()
 	int iA = 0, iB = 0, oA = 0;
 	int iiA, iiB;
 	cout
-		<< "Level 4"<< endl
-		<< "NOR vs. OR"<< endl
-		<< "+ Goal: Positive output."<< endl 
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl 
-		<< "- NOR Gates: Gives positive output with no positive input"<< endl 
-		<< "- OR Gates: Gives positive output with any positive input"<< endl
-		<< "[ I I   I I ]"<< endl
-		<< "[ NOR   OR  ]"<< endl
-		<< "[    AND    ]"<< endl
-		<< "[     O     ]"<< endl
-		<< endl
-		<< "Have fun! :)"<< endl;
+		<< "Level 4\n"
+		<< "NOR vs. OR\n"
+		<< "+ Goal: Positive output.\n" 
+		<< "- AND Gates: Give positive output with two positive inputs\n" 
+		<< "- NOR Gates: Gives positive output with no positive input\n" 
+		<< "- OR Gates: Gives positive output with any positive input\n"
+		<< "[ I I   I I ]\n"
+		<< "[ NOR   OR  ]\n"
+		<< "[    AND    ]\n"
+		<< "[     O     ]\n\n"
+		<< "Have fun! :)\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gatenor(iA, iB);
@@ -393,16 +344,16 @@ int level5()
 	int iA = 0, iB = 0, oA = 0;
 	int iiA, iiB;
 	cout
-		<< "Level 5"<< endl
-		<< "AND NAND too."<< endl
-		<< "+ Goal: Positive output."<< endl 
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl 
-		<< "- NAND Gates: Gives positive output with any negative input"<< endl 
-		<< "- NOR Gates: Gives positive output with no positive input"<< endl
-		<< "[ I I   I I ]"<< endl
-		<< "[ AND   NAND]"<< endl
-		<< "[    NOR    ]"<< endl
-		<< "[     O     ]"<< endl;
+		<< "Level 5\n"
+		<< "AND NAND too.\n"
+		<< "+ Goal: Positive output.\n" 
+		<< "- AND Gates: Give positive output with two positive inputs\n" 
+		<< "- NAND Gates: Gives positive output with any negative input\n" 
+		<< "- NOR Gates: Gives positive output with no positive input\n"
+		<< "[ I I   I I ]\n"
+		<< "[ AND   NAND]\n"
+		<< "[    NOR    ]\n"
+		<< "[     O     ]\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gateand(iA, iB);
@@ -423,19 +374,19 @@ int level6()
 	int iiD, iiE;
 	int iiF;
 	cout
-		<< "Level 6"<< endl 
-		<< "NOT AND NOR OR"<< endl 
-		<< "+ Goal: Negative output."<< endl 
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl 
-		<< "- NOR Gates: Gives positive output with no positive input"<< endl 
-		<< "- OR Gates: Gives positive output with any positive input"<< endl 
-		<< "- NOT Gates: Gives positive output with negative input, only accepts one input."<< endl 
-		<< "[ I I  I I   I I ]"<< endl 
-		<< "[ AND  NOR   OR  ]"<< endl 
-		<< "[   AND     NOT  ]"<< endl
-		<< "[       AND      ]"<< endl
-		<< "[       NOT      ]"<< endl 
-		<< "[        O       ]"<< endl;
+		<< "Level 6\n" 
+		<< "NOT AND NOR OR\n" 
+		<< "+ Goal: Negative output.\n" 
+		<< "- AND Gates: Give positive output with two positive inputs\n" 
+		<< "- NOR Gates: Gives positive output with no positive input\n" 
+		<< "- OR Gates: Gives positive output with any positive input\n" 
+		<< "- NOT Gates: Gives positive output with negative input, only accepts one input.\n" 
+		<< "[ I I  I I   I I ]\n" 
+		<< "[ AND  NOR   OR  ]\n" 
+		<< "[   AND     NOT  ]\n"
+		<< "[       AND      ]\n"
+		<< "[       NOT      ]\n" 
+		<< "[        O       ]\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gateand(iA, iB);
@@ -460,23 +411,23 @@ int level7()
 	int iA = 0, iB = 0, oA = 0;
 	int iiA, iiB, iiC;
 	cout
-		<< "Level 7"<< endl
-		<< "Transport"<< endl
-		<< "+ Goal: Negative output"<< endl
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl
-		<< "- NOT Gates: Gives positive output with negative input, only accepts one input."<< endl
-		<< "- BUFF Gates: Gives positive output with positive input, only accepts one input."<< endl
-		<< "[ I I   I I ]"<< endl
-		<< "[ AND   AND ]"<< endl
-		<< "[ NOT   BUFF]"<< endl
-		<< "[ BUFF  BUFF]"<< endl
-		<< "[ NOT   NOT ]"<< endl
-		<< "[ BUFF  NOT ]"<< endl
-		<< "[ BUFF  BUFF]"<< endl
-		<< "[ BUFF  NOT ]"<< endl
-		<< "[    AND    ]"<< endl
-		<< "[    NOT    ]"<< endl
-		<< "[     O     ]"<< endl;
+		<< "Level 7\n"
+		<< "Transport\n"
+		<< "+ Goal: Negative output\n"
+		<< "- AND Gates: Give positive output with two positive inputs\n"
+		<< "- NOT Gates: Gives positive output with negative input, only accepts one input.\n"
+		<< "- BUFF Gates: Gives positive output with positive input, only accepts one input.\n"
+		<< "[ I I   I I ]\n"
+		<< "[ AND   AND ]\n"
+		<< "[ NOT   BUFF]\n"
+		<< "[ BUFF  BUFF]\n"
+		<< "[ NOT   NOT ]\n"
+		<< "[ BUFF  NOT ]\n"
+		<< "[ BUFF  BUFF]\n"
+		<< "[ BUFF  NOT ]\n"
+		<< "[    AND    ]\n"
+		<< "[    NOT    ]\n"
+		<< "[     O     ]\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gateand(iA, iB);
@@ -502,16 +453,16 @@ int level8()
 	int iA = 0, iB = 0, oA = 0;
 	int iiA, iiB;
 	cout
-		<< "Level 8"<< endl
-		<< "Exclusively Exclusive"<< endl
-		<< "+ Goal: Negative output"<< endl
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl
-		<< "- XOR Gates: Gives positive output when the inputs are different."<< endl
-		<< "- XNOR Gates: Gives positive output when the inputs are the same."<< endl
-		<< "[ I I   I I ]"<< endl
-		<< "[ XOR   XNOR]"<< endl
-		<< "[    AND    ]"<< endl
-		<< "[     O     ]"<< endl;
+		<< "Level 8\n"
+		<< "Exclusively Exclusive\n"
+		<< "+ Goal: Negative output\n"
+		<< "- AND Gates: Give positive output with two positive inputs\n"
+		<< "- XOR Gates: Gives positive output when the inputs are different.\n"
+		<< "- XNOR Gates: Gives positive output when the inputs are the same.\n"
+		<< "[ I I   I I ]\n"
+		<< "[ XOR   XNOR]\n"
+		<< "[    AND    ]\n"
+		<< "[     O     ]\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gatexor(iA, iB);
@@ -530,15 +481,15 @@ int level9()
 	int iA = 0, iB = 0, oA = 0;
 	int iiA, iiB;
 	cout
-		<< "Level 9"<< endl
-		<< "V.I.P. Only"<< endl
-		<< "+ Goal: Positive output"<< endl
-		<< "- XOR Gates: Gives positive output when the inputs are different."<< endl
-		<< "- XNOR Gates: Gives positive output when the inputs are the same."<< endl
-		<< "[ I I   I I ]"<< endl
-		<< "[ XNOR  XNOR]"<< endl
-		<< "[    XOR    ]"<< endl
-		<< "[     O     ]"<< endl;
+		<< "Level 9\n"
+		<< "V.I.P. Only\n"
+		<< "+ Goal: Positive output\n"
+		<< "- XOR Gates: Gives positive output when the inputs are different.\n"
+		<< "- XNOR Gates: Gives positive output when the inputs are the same.\n"
+		<< "[ I I   I I ]\n"
+		<< "[ XNOR  XNOR]\n"
+		<< "[    XOR    ]\n"
+		<< "[     O     ]\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gatexnor(iA, iB);
@@ -559,20 +510,20 @@ int level10()
 	int iiE, iiF;
 	int iiG;
 	cout
-		<< "Level 10"<< endl
-		<< "The Second Level"<< endl
-		<< "+ Goal: Negative output"<< endl
-		<< "- XOR Gates: Gives positive output when the inputs are different."<< endl
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl
-		<< "- XNOR Gates: Gives positive output when the inputs are the same."<< endl 
-		<< "- NOR Gates: Gives positive output with no positive input"<< endl
-		<< "- NOT Gates: Gives positive output with negative input, only accepts one input."<< endl
-		<< "[ I I   I I   I I   I I ]"<< endl
-		<< "[ XOR   XNOR  NOR   XOR ]"<< endl
-		<< "[     AND       NOR     ]"<< endl
-		<< "[          XOR          ]"<< endl
-		<< "[          NOT          ]"<< endl
-		<< "[           O           ]"<< endl;
+		<< "Level 10\n"
+		<< "The Second Level\n"
+		<< "+ Goal: Negative output\n"
+		<< "- XOR Gates: Gives positive output when the inputs are different.\n"
+		<< "- AND Gates: Give positive output with two positive inputs\n"
+		<< "- XNOR Gates: Gives positive output when the inputs are the same.\n" 
+		<< "- NOR Gates: Gives positive output with no positive input\n"
+		<< "- NOT Gates: Gives positive output with negative input, only accepts one input.\n"
+		<< "[ I I   I I   I I   I I ]\n"
+		<< "[ XOR   XNOR  NOR   XOR ]\n"
+		<< "[     AND       NOR     ]\n"
+		<< "[          XOR          ]\n"
+		<< "[          NOT          ]\n"
+		<< "[           O           ]\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iiA = gatexor(iA, iB);
@@ -600,22 +551,22 @@ int level11()
 	int iA = 0, iB = 0, iC = 0, iD = 0, iE = 0, iF = 0, iG = 0, iH = 0, oA = 0;
 	int iiA, iiB, iiC, iiD, iiE, iiF;
 	cout
-		<< "Level 11"<< endl 
-		<< "'You just did that to confuse me'"<< endl 
-		<< "+ Goal: Positive output."<< endl 
-		<< "- AND Gates: Give positive output with two positive inputs"<< endl 
-		<< "- NOR Gates: Gives positive output with no positive input"<< endl
-		<< "- NOT Gates: Gives positive output with negative input, only accepts one input."<< endl
-		<< "- XOR Gates: Gives positive output when the inputs are different."<< endl
-		<< "- BUFF Gates: Gives positive output with positive input, only accepts one input."<< endl 
-		<< "- NAND Gates: Gives positive output with any negative input"<< endl 
-		<< "[ I I   I I   I I   I I ]"<< endl 
-		<< "[ NAND  XOR   NOR   XOR ]"<< endl 
-		<< "[ BUFF  BUFF  NOT   BUFF]"<< endl
-		<< "[     AND        XOR    ]"<< endl
-		<< "[     NOT        BUFF   ]"<< endl
-		<< "[          AND          ]"<< endl
-		<< "[           O           ]"<< endl;
+		<< "Level 11\n" 
+		<< "'You just did that to confuse me'\n" 
+		<< "+ Goal: Positive output.\n" 
+		<< "- AND Gates: Give positive output with two positive inputs\n" 
+		<< "- NOR Gates: Gives positive output with no positive input\n"
+		<< "- NOT Gates: Gives positive output with negative input, only accepts one input.\n"
+		<< "- XOR Gates: Gives positive output when the inputs are different.\n"
+		<< "- BUFF Gates: Gives positive output with positive input, only accepts one input.\n" 
+		<< "- NAND Gates: Gives positive output with any negative input\n" 
+		<< "[ I I   I I   I I   I I ]\n" 
+		<< "[ NAND  XOR   NOR   XOR ]\n" 
+		<< "[ BUFF  BUFF  NOT   BUFF]\n"
+		<< "[     AND        XOR    ]\n"
+		<< "[     NOT        BUFF   ]\n"
+		<< "[          AND          ]\n"
+		<< "[           O           ]\n";
 	iA = gateinput("A");
 	iB = gateinput("B");
 	iC = gateinput("C");
