@@ -68,8 +68,7 @@ int menu()
 	cout<<"---------------------------------------\n";
 	int input;
 	string lvlnum = "";
-	cout<<"0. Help\n"
-		<<"1. Play\n"
+	cout<<"1. Play\n"
 		<<"2. Code\n"
 		<<"3. Reset\n"
 		<<"4. Exit\n";
@@ -77,7 +76,6 @@ int menu()
 		cout<<"---------------------------------------\n"
 			<<"Please select from the menu\n"
 			<<"---------------------------------------\n" 
-			<<"0. Help\n"
 			<<"1. Play\n"
 			<<"2. Code\n"
 			<<"3. Reset\n"
@@ -86,8 +84,6 @@ int menu()
 	cout<<"---------------------------------------\n";
 	switch (input)
 	{
-		case 0:cout<<"Illogical is a puzzle game based around logic gates and en\ntering positive or negative inputs to recieve certain outp\nuts required to complete the level\n";
-		menu(); break;
 		case 1: startgame(); break;
 		case 2: cout<<"> "; cin >> lvlnum;
 		codecheck(lvlnum);
