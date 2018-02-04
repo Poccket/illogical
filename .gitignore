@@ -1,0 +1,3 @@
+# output file and vim backup file
+*.o
+*.swp

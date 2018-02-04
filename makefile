@@ -1,2 +1,2 @@
 all:
-	g++ -std=c++11 -o logic logicre.c
+	g++ -std=c++11 -o logic.o logicre.c
